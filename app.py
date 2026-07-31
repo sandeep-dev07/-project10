@@ -1,31 +1,39 @@
 from flask import Flask, render_template
-from load_data import load_data, get_data_summary
+
+from load_data import get_data_summary, load_data
 
 app = Flask(__name__)
 
+
+def render_page(active: str, **context):
+    """Render the single-page shell with the given section active."""
+    return render_template("index.html", active=active, **context)
+
+
+def safe_call(func, *args, **kwargs):
+    """Run ``func`` and return ``(result, error_message)`` instead of raising."""
+    try:
+        return func(*args, **kwargs), None
+    except FileNotFoundError as e:
+        return None, str(e)
+    except Exception as e:
+        return None, f"Unexpected error: {e}"
+
+
 @app.route("/")
 def index():
-    return render_template("index.html", active="none")
+    return render_page("none")
+
 
 @app.route("/data-loading")
 def data_loading():
-    error = None
+    df, error = safe_call(load_data)
     summary = None
+    if error is None:
+        summary, error = safe_call(get_data_summary, df)
 
-    try:
-        df = load_data()          # Load CSV
-        summary = get_data_summary(df)   # Pass DataFrame
-    except FileNotFoundError as e:
-        error = str(e)
-    except Exception as e:
-        error = f"Unexpected error: {e}"
+    return render_page("data-loading", summary=summary, error=error)
 
-    return render_template(
-        "index.html",
-        active="data-loading",
-        summary=summary,
-        error=error,
-    )
 
 if __name__ == "__main__":
     app.run(debug=True)
