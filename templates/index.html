@@ -1,3 +1,4 @@
+{% import "macros.html" as ui %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,44 +49,10 @@
                 </table>
 
                 <h3>Column Info</h3>
-                <div class="table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>Column</th><th>Dtype</th><th>Missing Values</th></tr>
-                        </thead>
-                        <tbody>
-                        {% for col in summary.columns %}
-                            <tr>
-                                <td>{{ col }}</td>
-                                <td>{{ summary.dtypes[col] }}</td>
-                                <td>{{ summary.missing_counts[col] }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {{ ui.scrollable_table(["Column", "Dtype", "Missing Values"], summary.column_rows) }}
 
                 <h3>Preview (first 10 rows)</h3>
-                <div class="table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                            {% for col in summary.columns %}
-                                <th>{{ col }}</th>
-                            {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for row in summary.preview %}
-                            <tr>
-                            {% for col in summary.columns %}
-                                <td>{{ row[col] }}</td>
-                            {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {{ ui.scrollable_table(summary.columns, summary.preview_rows) }}
             {% endif %}
         {% endif %}
 
