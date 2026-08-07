@@ -3,7 +3,7 @@ from idlelib.pyshell import usage_msg
 
 import pandas as pd
 
-DATA_PATH = r"C:\Users\Sandeep\PycharmProjects\MACHINELEARNING\placement_predict_50k Dataset (3)(in).csv"
+DATA_PATH =r"C:\Users\Sandeep\PycharmProjects\Placement_Prediction\placement_predict_50k Dataset (3)(in).csv"
 def load_data(path : str = DATA_PATH) -> pd.DataFrame:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Dataset not found at: {path}")
