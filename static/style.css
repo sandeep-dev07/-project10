@@ -61,6 +61,40 @@ body {
     cursor: not-allowed;
 }
 
+.boosting-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0;
+    margin: 14px 0 20px;
+}
+
+.boosting-link {
+    display: inline-block;
+    background: #eaf2ff;
+    color: #0b2e4f;
+    border: 1px solid #9bb6e8;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(14, 63, 104, 0.12);
+    transition: all 0.2s ease;
+}
+
+.boosting-link:hover {
+    background: #dfeeff;
+    color: #052a48;
+    transform: translateY(-1px);
+}
+
+.boosting-link.active {
+    background: #1f3a5f;
+    border-color: #1f3a5f;
+    color: #ffffff;
+}
+
 .content {
     flex: 1;
     padding: 24px 32px;
@@ -132,108 +166,4 @@ body {
     background-color: #eaeff5;
     position: sticky;
     top: 0;
-}
-
-.chart-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 10px;
-}
-
-.chart-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px;
-}
-
-.chart-card img {
-    max-width: 400px;
-    display: block;
-}
-
-/* ===========================
-   EDA PAGE STYLES
-=========================== */
-
-.chart-grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    margin-top:20px;
-}
-
-.chart-card{
-    background:#fff;
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
-
-.chart-card img{
-    width:500px;
-    max-width:100%;
-    display:block;
-}
-
-.summary-table{
-    border-collapse:collapse;
-    width:60%;
-    margin:20px 0;
-}
-
-.summary-table td{
-    border:1px solid #ddd;
-    padding:10px;
-}
-
-.summary-table tr:nth-child(even){
-    background:#f5f5f5;
-}
-
-.table-wrapper{
-    overflow-x:auto;
-    margin-bottom:30px;
-}
-
-.data-table{
-    border-collapse:collapse;
-    width:100%;
-    font-size:14px;
-}
-
-.data-table th{
-    background:#1976d2;
-    color:white;
-    padding:10px;
-    border:1px solid #ccc;
-}
-
-.data-table td{
-    padding:8px;
-    border:1px solid #ddd;
-}
-
-.data-table tr:nth-child(even){
-    background:#fafafa;
-}
-
-.error{
-    background:#ffebee;
-    color:#c62828;
-    border:1px solid #ef9a9a;
-    padding:12px;
-    margin:15px 0;
-    border-radius:5px;
-}
-
-h2{
-    margin-bottom:20px;
-}
-
-h3{
-    margin-top:30px;
-    color:#1565c0;
 }

@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placement Prediction Project</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+<meta charset="UTF-8">
+<title>Placement Prediction Project</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
 <header class="topbar">
@@ -16,168 +12,324 @@
 </header>
 
 <div class="layout">
-
-    <!-- Sidebar -->
+    <!-- Left panel -->
     <nav class="sidebar">
-
         <ul>
-
             <li>
                 <a href="{{ url_for('data_loading') }}"
                    class="menu-item {% if active == 'data-loading' %}active{% endif %}">
                     Data Loading
                 </a>
             </li>
-
             <li>
-                <a href="{{ url_for('eda_page') }}"
-                   class="menu-item {% if active == 'eda' %}active{% endif %}">
-                    Exploratory Data Analysis
-                </a>
+                <a href="{{ url_for('preprocessing') }}" class="menu-item {% if active == 'preprocessing' %}active{% endif %}">Preprocessing</a>
             </li>
-
-            <li class="menu-item disabled">
-                Preprocessing (Coming Soon)
+            <li>
+                <a href="{{ url_for('eda') }}" class="menu-item {% if active == 'eda' %}active{% endif %}">EDA</a>
             </li>
-
-            <li class="menu-item disabled">
-                Model Training (Coming Soon)
+            <li>
+                <a href="{{ url_for('linear_regression') }}" class="menu-item {% if active == 'linear-regression' %}active{% endif %}">Linear Regression</a>
             </li>
-
-            <li class="menu-item disabled">
-                Prediction (Coming Soon)
+            <li>
+                <a href="{{ url_for('logistic_regression') }}" class="menu-item {% if active == 'logistic-regression' %}active{% endif %}">Logistic Regression</a>
             </li>
-
+            <li>
+                <a href="{{ url_for('decision_tree') }}" class="menu-item {% if active == 'decision-tree' %}active{% endif %}">Decision Tree</a>
+            </li>
+            <li class="menu-item disabled">Prediction (coming soon)</li>
         </ul>
-
     </nav>
 
-    <!-- Main Content -->
-
+    <!-- Main content -->
     <main class="content">
 
         {% if active == 'none' %}
-
-            <h2>Welcome</h2>
-
-            <p>
-                Select a module from the left sidebar to begin.
-            </p>
-
+            <p>Select an option from the left panel to get started.</p>
         {% endif %}
 
         {% if active == 'data-loading' %}
-
             <h2>Data Loading</h2>
 
             {% if error %}
-                <div class="error">
-                    {{ error }}
-                </div>
+                <div class="error">{{ error }}</div>
             {% endif %}
 
             {% if summary %}
-
                 <table class="summary-table">
-
-                    <tr>
-                        <td>Rows</td>
-                        <td>{{ summary.n_rows }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Columns</td>
-                        <td>{{ summary.n_cols }}</td>
-                    </tr>
-
+                    <tr><td>Rows</td><td>{{ summary.n_rows }}</td></tr>
+                    <tr><td>Columns</td><td>{{ summary.n_cols }}</td></tr>
                 </table>
 
-                <h3>Column Information</h3>
-
+                <h3>Column Info</h3>
                 <div class="table-wrapper">
-
                     <table class="data-table">
-
                         <thead>
-
-                            <tr>
-
-                                <th>Column</th>
-                                <th>Datatype</th>
-                                <th>Missing Values</th>
-
-                            </tr>
-
+                            <tr><th>Column</th><th>Dtype</th><th>Missing Values</th></tr>
                         </thead>
-
                         <tbody>
-
                         {% for col in summary.columns %}
-
                             <tr>
-
                                 <td>{{ col }}</td>
-
                                 <td>{{ summary.dtypes[col] }}</td>
-
                                 <td>{{ summary.missing_counts[col] }}</td>
-
                             </tr>
-
                         {% endfor %}
-
                         </tbody>
-
                     </table>
-
                 </div>
 
-                <h3>Dataset Preview</h3>
-
+                <h3>Preview (first 10 rows)</h3>
                 <div class="table-wrapper">
-
                     <table class="data-table">
-
                         <thead>
-
-                        <tr>
-
+                            <tr>
                             {% for col in summary.columns %}
                                 <th>{{ col }}</th>
                             {% endfor %}
-
-                        </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                        {% for row in summary.preview %}
-
-                            <tr>
-
-                                {% for col in summary.columns %}
-
-                                    <td>{{ row[col] }}</td>
-
-                                {% endfor %}
-
                             </tr>
-
+                        </thead>
+                        <tbody>
+                        {% for row in summary.preview %}
+                            <tr>
+                            {% for col in summary.columns %}
+                                <td>{{ row[col] }}</td>
+                            {% endfor %}
+                            </tr>
                         {% endfor %}
-
                         </tbody>
-
                     </table>
-
                 </div>
+            {% endif %}
+        {% endif %}
 
+        {% if active == 'preprocessing' %}
+            <h2>Preprocessing</h2>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
             {% endif %}
 
+            {% if preprocessing_summary %}
+                <table class="summary-table">
+                    <tr><td>Original rows</td><td>{{ preprocessing_summary.original_rows }}</td></tr>
+                    <tr><td>Processed rows</td><td>{{ preprocessing_summary.processed_rows }}</td></tr>
+                    <tr><td>Missing values before</td><td>{{ preprocessing_summary.missing_before }}</td></tr>
+                    <tr><td>Missing values after</td><td>{{ preprocessing_summary.missing_after }}</td></tr>
+                    <tr><td>Target column</td><td>{{ preprocessing_summary.target_column }}</td></tr>
+                </table>
+
+                <h3>Feature Engineering Steps</h3>
+                <ul>
+                    <li>Removed non-predictive identifier column.</li>
+                    <li>Filled numeric missing values with median.</li>
+                    <li>Filled categorical missing values with mode.</li>
+                    <li>Applied one-hot encoding to categorical variables.</li>
+                    <li>Prepared the cleaned dataset for the machine learning model.</li>
+                </ul>
+
+                <h3>Processed Preview</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                {% for key in preprocessing_summary.preview[0].keys() %}
+                                    <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in preprocessing_summary.preview %}
+                                <tr>
+                                    {% for value in row.values() %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if active == 'linear-regression' %}
+            <h2>Linear Regression Model</h2>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            {% if model_summary %}
+                <table class="summary-table">
+                    <tr><td>Model</td><td>{{ model_summary.model_name }}</td></tr>
+                    <tr><td>Training rows</td><td>{{ model_summary.training_rows }}</td></tr>
+                    <tr><td>Features</td><td>{{ model_summary.feature_columns | join(', ') }}</td></tr>
+                    <tr><td>MSE</td><td>{{ '%.4f' % model_summary.mse }}</td></tr>
+                    <tr><td>RMSE</td><td>{{ '%.4f' % model_summary.rmse }}</td></tr>
+                    <tr><td>R2 Score</td><td>{{ '%.4f' % model_summary.r2_score }}</td></tr>
+                    <tr><td>Sample prediction</td><td>{{ '%.2f' % model_summary.sample_prediction }}</td></tr>
+                </table>
+
+                <h3>Sample Input</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                {% for key in model_summary.sample_input %}
+                                    <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for value in model_summary.sample_input.values() %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if active == 'logistic-regression' %}
+            <h2>Logistic Regression Model</h2>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            {% if logistic_summary %}
+                <table class="summary-table">
+                    <tr><td>Model</td><td>{{ logistic_summary.model_name }}</td></tr>
+                    <tr><td>Training rows</td><td>{{ logistic_summary.training_rows }}</td></tr>
+                    <tr><td>Test rows</td><td>{{ logistic_summary.test_rows }}</td></tr>
+                    <tr><td>Train Accuracy</td><td>{{ '%.4f' % logistic_summary.train_accuracy }}</td></tr>
+                    <tr><td>Test Accuracy</td><td>{{ '%.4f' % logistic_summary.test_accuracy }}</td></tr>
+                </table>
+
+                <h3>Confusion Matrix</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Predicted 0</th>
+                                <th>Predicted 1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Actual 0</td>
+                                <td>{{ logistic_summary.confusion_matrix[0][0] }}</td>
+                                <td>{{ logistic_summary.confusion_matrix[0][1] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Actual 1</td>
+                                <td>{{ logistic_summary.confusion_matrix[1][0] }}</td>
+                                <td>{{ logistic_summary.confusion_matrix[1][1] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if active == 'decision-tree' %}
+            <h2>Decision Tree Model</h2>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            {% if decision_tree_summary %}
+                <table class="summary-table">
+                    <tr><td>Model</td><td>{{ decision_tree_summary.model_name }}</td></tr>
+                    <tr><td>Features</td><td>{{ decision_tree_summary.feature_columns | join(', ') }}</td></tr>
+                    <tr><td>Training rows</td><td>{{ decision_tree_summary.training_rows }}</td></tr>
+                    <tr><td>Test rows</td><td>{{ decision_tree_summary.test_rows }}</td></tr>
+                    <tr><td>Train Accuracy</td><td>{{ '%.4f' % decision_tree_summary.train_accuracy }}</td></tr>
+                    <tr><td>Test Accuracy</td><td>{{ '%.4f' % decision_tree_summary.test_accuracy }}</td></tr>
+                </table>
+
+                <h3>Confusion Matrix</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Predicted 0</th>
+                                <th>Predicted 1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Actual 0</td>
+                                <td>{{ decision_tree_summary.confusion_matrix[0][0] }}</td>
+                                <td>{{ decision_tree_summary.confusion_matrix[0][1] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Actual 1</td>
+                                <td>{{ decision_tree_summary.confusion_matrix[1][0] }}</td>
+                                <td>{{ decision_tree_summary.confusion_matrix[1][1] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <h3>Boosting Techniques</h3>
+            <div class="boosting-summary-list">
+                {% if boosting_summaries %}
+                    {% for summary_entry in boosting_summaries %}
+                        {% set boosting_summary = summary_entry.result %}
+                        <div class="boosting-card">
+                            <h4>{{ summary_entry.title }}</h4>
+                            <table class="summary-table">
+                                <tr><td>Model</td><td>{{ boosting_summary.model_name }}</td></tr>
+                                <tr><td>Training rows</td><td>{{ boosting_summary.training_rows }}</td></tr>
+                                <tr><td>Test rows</td><td>{{ boosting_summary.test_rows }}</td></tr>
+                                <tr><td>Train Accuracy</td><td>{{ '%.4f' % boosting_summary.train_accuracy }}</td></tr>
+                                <tr><td>Test Accuracy</td><td>{{ '%.4f' % boosting_summary.test_accuracy }}</td></tr>
+                            </table>
+
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Predicted 0</th>
+                                            <th>Predicted 1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Actual 0</td>
+                                            <td>{{ boosting_summary.confusion_matrix[0][0] }}</td>
+                                            <td>{{ boosting_summary.confusion_matrix[0][1] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Actual 1</td>
+                                            <td>{{ boosting_summary.confusion_matrix[1][0] }}</td>
+                                            <td>{{ boosting_summary.confusion_matrix[1][1] }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No boosting models were available.</p>
+                {% endif %}
+            </div>
+
+            {% if boosting_errors %}
+                {% for item in boosting_errors %}
+                    <div class="error">{{ item.title }}: {{ item.error }}</div>
+                {% endfor %}
+            {% endif %}
         {% endif %}
 
     </main>
-
 </div>
 
 </body>
